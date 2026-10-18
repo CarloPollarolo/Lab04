@@ -52,7 +52,7 @@ class Stand:
     #imposto nuovo prezzo pure nella padre e non solo nelle figlie per:
     #1) chiarire che il prezzo iniziale self.__prezzo --> self.prezzo non viene modificato
     #2) serve per il confronto richiesto dall'ultima def di consegna, ovvero ordinare in ordine crescente per
-    #prezzo tutt gli stand compresi in padre e figlie, e quindi si imposta un nuovo prezzo per tutte e tre,
+    #prezzo tutti gli stand compresi in padre e figlie, e quindi si imposta un nuovo prezzo per tutte e tre,
     #che viene modificato da aggiunte specifiche nelle figlie e che invece rimane costante nella padre
 
     def __lt__(self, other):
@@ -65,7 +65,7 @@ class Stand:
 class StandPremium(Stand):
     def __init__(self,codice_stand,sup,padiglione,prezzo,posizione):
         super().__init__(codice_stand,sup,padiglione,prezzo) #nel super attributi ereditati
-        self.__posizione=posizione  #dopp super nuovo attributo specifico
+        self.__posizione=posizione  #dopo super nuovo attributo specifico
 
     @property
     def posizione(self):
@@ -156,7 +156,7 @@ class LingottoFiere:
                     espositore = Espositore(codice_espositore, nome, cognome)
                     self.espositori[codice_espositore] = espositore
 
-                if line[0].startswith("S") and len(line) < 5:
+                if line[0].startswith("S") and len(line) < 5: # se ha solo 4 colonne piene, allora è stand standard
                     codice_stand = line[0]
                     sup = line[1]
                     padiglione = line[2]
@@ -205,7 +205,8 @@ class LingottoFiere:
 
         #infine, se non si verifica alcun problema, assegno all'attributo 'espositore' dello stand richiesto l'espositore richiesto
         self.stand[codice_stand].espositore = espositore #come l'intero oggetto espositore, data la riga 201
-        
+        # il controllo della riga 203 avviene grazie a __eq__ definito della classe Espositore, che
+        # considera due espositori uguali dato il codice_espositore
         #nel dizionario self.stand con chiave codice_stand il valore è l'oggetto della classe Stand,
         #classe in cui abbiamo definito pure l' attributo 'responsabile' che non compare fra gli attributi dell'
         #oggetto-valore ma è cmq recuperabile dagli attributi totali della sua classe, facendo appunto '.espositore'
@@ -216,7 +217,7 @@ class LingottoFiere:
         for espositore in self.espositori.values(): # i valori di quel dizionario sono tutti gli esp. della classe Espositori
             codice_stand = None  #inizialmente imposto per ogni esp. uno stand nullo
 
-            for s in self.stand.values():
+            for s in self.stand.values(): #controllo date le modifiche della def precedente!!!:
                 if s.espositore == espositore: #se vedo che l'esp. di uno stand coincide con uno fra gli esp. in Espositori
                     codice_stand = s.codice_stand #allora gli assegno nello stand nullo quello stand
                     break
